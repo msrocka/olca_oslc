@@ -4,6 +4,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 import "package:olca_oslc/ipc.dart" as ipc;
 import "package:olca_oslc/olca.dart" as o;
+import "package:olca_oslc/turtle.dart";
 
 class _Args {
   int olcaPort = 8080;
@@ -34,8 +35,8 @@ class _Args {
 
 main(List<String> args) async {
   var appArgs = _Args.of(args);
-  print("bridge openLCA service @${appArgs.olcaPort}"
-      " to http://localhost:${appArgs.port}");
+  var base = "http://localhost:${appArgs.port}";
+  print("bridge openLCA service @${appArgs.olcaPort} to $base");
 
   try {
     var client = ipc.Client(appArgs.olcaPort);
@@ -43,11 +44,16 @@ main(List<String> args) async {
     final router = Router();
 
     router.get("/", (Request req) async {
-      return Response.ok("root");
+      var doc = Document()
+        ..addPrefix(Vocab.oslci)
+        ..add(
+            QName.uri(base), QName.a, QName.of(Vocab.oslci, "ServiceProvider"));
+      return Response.ok(doc.toString());
     });
 
     router.get("/processes", (Request req) async {
       var refs = await client.getDescriptors(o.RefType.process);
+
       var text = """
 
 """;
