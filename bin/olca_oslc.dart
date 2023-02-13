@@ -64,6 +64,10 @@ class Provider {
   QName q(String base) {
     return QName.uri("$base/data/$name");
   }
+
+  QName resource(String base, String? id) {
+    return QName.uri("$base/data/$name/$id");
+  }
 }
 
 main(List<String> args) async {
@@ -88,15 +92,36 @@ main(List<String> args) async {
           headers: {"Content-Type": "text/turtle; charset=utf-8"});
     });
 
-    router.get("/processes", (Request req) async {
-      var refs = await client.getDescriptors(o.RefType.process);
+    for (var provider in Provider.all()) {
+      router.get("/data/${provider.name}", (Request req) async {
+        var doc = Document()..addPrefix(Vocab.rdfs);
+        var refs = await client.getDescriptors(provider.type);
+        for (var ref in refs) {
+          doc.add(provider.q(base), Vocab.rdfs.nameOf("member"),
+              provider.resource(base, ref.id));
+        }
+        return Response.ok(doc.toString(),
+            headers: {"Content-Type": "text/turtle; charset=utf-8"});
+      });
+    }
 
-      var text = """
-
-""";
-
-      return Response.ok("${refs.length} processes");
-    });
+    for (var provider in Provider.all()) {
+      router.get("/data/${provider.name}/<id>", (Request req, String id) async {
+        var ref = await client.getDescriptor(provider.type, id);
+        var doc = Document()..addPrefix(Vocab.dcterms);
+        var about = provider.resource(base, ref.id);
+        doc.add(
+            about,
+            QName.a,
+            QName.uri(
+                "https://greendelta.github.io/olca-schema/classes/${provider.type.type}.html"));
+        doc.add(about, Vocab.dcterms.nameOf("identifier"), ref.id);
+        doc.add(about, Vocab.dcterms.nameOf("title"), ref.name);
+        doc.add(about, Vocab.dcterms.nameOf("hasVersion"), ref.version);
+        return Response.ok(doc.toString(),
+            headers: {"Content-Type": "text/turtle; charset=utf-8"});
+      });
+    }
 
     await shelf_io.serve(router, "localhost", appArgs.port);
   } catch (e) {

@@ -15,6 +15,11 @@ class Client {
     return _id;
   }
 
+  Future<Ref> getDescriptor(RefType type, String id) async {
+    var r = await _call("data/get/descriptor", {"@type": type.type, "@id": id});
+    return Ref.of(r as Map);
+  }
+
   Future<List<Ref>> getDescriptors(RefType type) async {
     return _each<Ref>("data/get/descriptors", Ref.of,
         params: {"@type": type.type});
@@ -22,6 +27,17 @@ class Client {
 
   Future<List<T>> _each<T>(String method, T Function(Map) fn,
       {Map<String, Object?>? params}) async {
+    var r = await _call(method, params);
+    var ts = <T>[];
+    for (var x in r as List) {
+      if (x is Map) {
+        ts.add(fn(x));
+      }
+    }
+    return ts;
+  }
+
+  Future<Object> _call(String method, [Map<String, Object?>? params]) async {
     var uri = Uri.http(_host);
     var body = {
       "jsonrpc": "2.0",
@@ -37,12 +53,6 @@ class Client {
     if (err != null) {
       throw Exception("$method failed: $err");
     }
-    var ts = <T>[];
-    for (var x in map["result"] as List) {
-      if (x is Map) {
-        ts.add(fn(x));
-      }
-    }
-    return ts;
+    return map["result"];
   }
 }

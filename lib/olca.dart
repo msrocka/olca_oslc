@@ -35,6 +35,7 @@ enum RefType {
 class Ref {
   String? id;
   String? name;
+  String? version;
 
   Ref();
 
@@ -58,6 +59,10 @@ class Ref {
     if (name is String) {
       this.name = name;
     }
+    var version = dict["version"];
+    if (version is String) {
+      this.version = version;
+    }
     return this;
   }
 
@@ -68,6 +73,9 @@ class Ref {
     }
     if (name != null) {
       map["name"] = name;
+    }
+    if (version != null) {
+      map["version"] = version;
     }
     return map;
   }

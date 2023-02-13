@@ -1,5 +1,7 @@
 class Vocab {
   static final oslc = Prefix("oslc", "http://open-service.net/ns/core#");
+  static final rdfs = Prefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+  static final dcterms = Prefix("dcterms", "http://purl.org/dc/terms/");
 }
 
 class Uri {
@@ -96,7 +98,8 @@ class Document {
     _prefixes.add(prefix);
   }
 
-  add(QName subject, QName predicate, Object value) {
+  add(QName subject, QName predicate, Object? value) {
+    if (value == null) return;
     var list = _triples.putIfAbsent(_adapt(subject), () => []);
     var str = value is String ? '"$value"' : value.toString();
     list.add(_Val(predicate, str));
