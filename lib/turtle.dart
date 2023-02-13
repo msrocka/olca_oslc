@@ -1,5 +1,5 @@
 class Vocab {
-  static final oslci = Prefix("oslc", "http://open-service.net/ns/core#");
+  static final oslc = Prefix("oslc", "http://open-service.net/ns/core#");
 }
 
 class Uri {

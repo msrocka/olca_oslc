@@ -1,8 +1,23 @@
 import "dart:convert";
 
 enum RefType {
+  actor("Actor"),
+  currency("Currency"),
+  dqSystem("DQSystem"),
+  epd("Epd"),
+  flow("Flow"),
+  flowProperty("FlowProperty"),
+  impactCategory("ImpactCategory"),
+  impactMethod("ImpactMethod"),
+  location("Location"),
+  parameter("Parameter"),
   process("Process"),
-  flow("Flow");
+  productSystem("ProductSystem"),
+  project("Project"),
+  result("Result"),
+  socialIndicator("SocialIndicator"),
+  source("Source"),
+  unitGroup("UnitGroup");
 
   final String type;
   const RefType(this.type);
