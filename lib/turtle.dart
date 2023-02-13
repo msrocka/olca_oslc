@@ -22,7 +22,10 @@ class QName {
 
   @override
   String toString() {
-    return prefix != null ? "${prefix!.name}:$name" : "<$name>";
+    if (prefix != null) {
+      return prefix!.isEmpty ? name : "${prefix!.name}:$name";
+    }
+    return "<$name>";
   }
 
   String full() {
@@ -47,6 +50,10 @@ class Prefix {
   Prefix(this.name, this.uri);
 
   bool get isEmpty => name == "" && uri == "";
+
+  QName nameOf(String name) {
+    return QName.of(this, name);
+  }
 
   bool matches(QName qname) {
     return qname.prefix != null
@@ -120,7 +127,7 @@ class Document {
         }
         str += "\n";
         var val = e.value[i];
-        str += "  ${val.predicate}  $val";
+        str += "  ${val.predicate} ${val.value}";
       }
       str += ".\n\n";
     }

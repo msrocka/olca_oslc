@@ -24,3 +24,15 @@ It takes two arguments which are both optional:
 
 
 ## Endpoints
+
+### `/`
+
+Returns the information about the service provider
+
+```turtle
+@prefix oslc: <http://open-service.net/ns/core#>.
+
+<http://localhost:8010>
+  a oslc:ServiceProvider;
+  oslc:queryBase <http://localhost:8010>.
+```

@@ -44,11 +44,14 @@ main(List<String> args) async {
     final router = Router();
 
     router.get("/", (Request req) async {
+      var about = QName.uri(base);
       var doc = Document()
         ..addPrefix(Vocab.oslci)
-        ..add(
-            QName.uri(base), QName.a, QName.of(Vocab.oslci, "ServiceProvider"));
-      return Response.ok(doc.toString());
+        ..add(about, QName.a, Vocab.oslci.nameOf("ServiceProvider"))
+        ..add(about, Vocab.oslci.nameOf("queryBase"), about);
+
+      return Response.ok(doc.toString(),
+          headers: {"Content-Type": "text/turtle; charset=utf-8"});
     });
 
     router.get("/processes", (Request req) async {
