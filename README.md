@@ -1,6 +1,6 @@
 # An openLCA - OSLC Bridge
 
-This is a small experimental project to explore a mapping of the
+This is a small prototype to explore a mapping of the
 [openLCA IPC protocol](https://greendelta.github.io/openLCA-ApiDoc/ipc/) to
 [OSLC](https://open-services.net/). Currently, this is just a small bridge
 server that consumes an openLCA IPC endpoint of the openLCA JSON-RPC protocol
@@ -26,7 +26,7 @@ It takes two arguments which are both optional:
 ## Routes
 
 The resource URIs of the bridge server all start with the base URL of that
-server. In the example below, the serve runs on `http://localhost:8010`, so the
+server. In the example below, the server runs on `http://localhost:8010`, so the
 URIs are relative to that.
 
 ### `GET /`
